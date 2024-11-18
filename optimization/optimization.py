@@ -86,11 +86,6 @@ def int_opt(x: np.array(int),
     :return: A vector of integers that minimizes the L_inf distance to x, with the sum of its elements equal to
              constraint.
     """
-    # check the input
-    assert isinstance(x, np.ndarray), f"Input must be a numpy array, got {type(x)}"
-    assert np.all(type(x) == int for x in x), f"Input vector must be an integer vector, got {x.dtype}"
-    assert isinstance(constraint, int), f"Constraint must be an integer, got {type(constraint)}"
-
     # first map to zero negative elements of y into the solution
     y = np.maximum(x, 0)
     # compute the linf distance between x and y
