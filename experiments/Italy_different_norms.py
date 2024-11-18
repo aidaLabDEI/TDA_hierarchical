@@ -254,4 +254,5 @@ if __name__ == "__main__":
     parser.add_argument("--final-level", type=int, help="Final level", default=6)
 
     args = parser.parse_args()
+    clear()
     main(args)
