@@ -65,6 +65,9 @@ def main(args: argparse.Namespace):
     spine = GeoSpine(geo_spine)
     Tree = OD_tree(df, spine)
 
+    # get the data at the final level
+    data_true = Tree.get_data_at_level(Tree.depth)
+
     # get parameters
     epsilons = args.epsilons
     num_experiments = args.num_experiments
