@@ -215,7 +215,6 @@ def main(args: argparse.Namespace):
     plt.tight_layout()
     path = os.path.join(folder_path, "mean_absolute_error.pdf")
     plt.savefig(path, dpi=300)
-    plt.show()
 
 
 # Custom type function to parse a tuple of floats
