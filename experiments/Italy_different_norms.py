@@ -84,6 +84,15 @@ def main(args: argparse.Namespace):
     # shape: mechanism, epsilons, experiments
     TIME = np.zeros((num_mechanisms, len(epsilons), num_experiments))
 
+    # RUN GAUSSOPT with Linf norm (IntOpt)
+    print("Running GaussOpt with Linf norm and IntOpt")
+    num_mech = 3
+    args.p = np.inf
+    args.optimizer = "int_opt"
+    for e, epsilon in enumerate(epsilons):
+        args.epsilon = epsilon
+        apply_mechanism(GaussOpt, args, num_mech, e)
+
     # RUN GAUSSOPT with L1 norm
     print("Running GaussOpt with L1 norm")
     num_mech = 0
@@ -107,15 +116,6 @@ def main(args: argparse.Namespace):
     num_mech = 2
     args.p = np.inf
     args.optimizer = "int"
-    for e, epsilon in enumerate(epsilons):
-        args.epsilon = epsilon
-        apply_mechanism(GaussOpt, args, num_mech, e)
-
-    # RUN GAUSSOPT with Linf norm (IntOpt)
-    print("Running GaussOpt with Linf norm and IntOpt")
-    num_mech = 3
-    args.p = np.inf
-    args.optimizer = "int_opt"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
