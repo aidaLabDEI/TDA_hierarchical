@@ -6,7 +6,7 @@ import numpy as np
 import tqdm as tqdm
 import argparse
 import time
-import datetime
+from datetime import datetime
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
 
@@ -16,6 +16,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from metrics import analysis
 from mechanism import GaussOpt
 from data_structure import GeoSpine, OD_tree
+
+
+def clear():
+    # Clear the terminal
+    if os.name == 'nt':  # For Windows
+        os.system('cls')
+    else:  # For macOS and Linux
+        os.system('clear')
 
 
 def main(args: argparse.Namespace):
@@ -34,9 +42,9 @@ def main(args: argparse.Namespace):
                                          dp_data=data,
                                          spine=Tree.spine,
                                          workload=workload)
-                max_error_sparse[num_mech, e, i, j] = analysis_dict["max_absolute_error"]
-                false_discovery_rate_sparse[num_mech, e, i, j] = analysis_dict["false_discovery_rate"]
-                false_negative_rate_sparse[num_mech, e, i, j] = analysis_dict["false_negative_rate"]
+                max_error[num_mech, e, i, j] = analysis_dict["max_absolute_error"]
+                false_discovery_rate[num_mech, e, i, j] = analysis_dict["false_discovery_rate"]
+                false_negative_rate[num_mech, e, i, j] = analysis_dict["false_negative_rate"]
                 absolute_error_distribution.append(np.abs(analysis_dict["error_distribution"][0]))
             absolute_error_distribution_epsilon.append(absolute_error_distribution)
             # clear jupyter output on the terminal
@@ -66,35 +74,25 @@ def main(args: argparse.Namespace):
     Tree = OD_tree(df, spine)
 
     # get the data at the final level
-    data_true = Tree.get_data_at_level(Tree.depth)
+    data_true = Tree.get_data_at_level(args.final_level)
 
     # get parameters
     epsilons = args.epsilons
     num_experiments = args.num_experiments
     # used to queries
-    final_level = Tree.depth
-    geo_level = int(final_level / 2)
+    geo_level = int(args.final_level / 2)
     levels: list[tuple] = [(i, i) if i == j else (i, j) for i in range(geo_level + 1) for j in range(i, i + 2) if
                            j < geo_level + 1]
     # shape: mechanisms, epsilons, experiments, levels
     num_mechanisms = 4
-    max_error_sparse = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
-    false_discovery_rate_sparse = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
-    false_negative_rate_sparse = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
+    max_error = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
+    false_discovery_rate = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
+    false_negative_rate = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
     # shape: mechanism, epsilons, levels
     MAE = np.zeros((num_mechanisms, len(epsilons), len(levels)))
     std = np.zeros((num_mechanisms, len(epsilons), len(levels)))
     # shape: mechanism, epsilons, experiments
     TIME = np.zeros((num_mechanisms, len(epsilons), num_experiments))
-
-    # RUN GAUSSOPT with Linf norm (IntOpt)
-    print("Running GaussOpt with Linf norm and IntOpt")
-    num_mech = 3
-    args.p = np.inf
-    args.optimizer = "int_opt"
-    for e, epsilon in enumerate(epsilons):
-        args.epsilon = epsilon
-        apply_mechanism(GaussOpt, args, num_mech, e)
 
     # RUN GAUSSOPT with L1 norm
     print("Running GaussOpt with L1 norm")
@@ -104,6 +102,8 @@ def main(args: argparse.Namespace):
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
+        clear()
+        if len(epsilons) > 1: print("Running GaussOpt with L1 norm")
 
     # RUN GAUSSOPT with L2 norm
     print("Running GaussOpt with L2 norm")
@@ -113,30 +113,45 @@ def main(args: argparse.Namespace):
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
+        clear()
+        if len(epsilons) > 1: print("Running GaussOpt with L2 norm")
 
     # RUN GAUSSOPT with Linf norm (no IntOpt)
     print("Running GaussOpt with Linf norm")
     num_mech = 2
-    args.p = np.inf
+    args.p = "inf"
     args.optimizer = "int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
+        clear()
+        if len(epsilons) > 1: print("Running GaussOpt with Linf norm")
+
+    # RUN GAUSSOPT with Linf norm (IntOpt)
+    print("Running GaussOpt with Linf norm and IntOpt")
+    num_mech = 3
+    args.p = "inf"
+    args.optimizer = "int_opt"
+    for e, epsilon in enumerate(epsilons):
+        args.epsilon = epsilon
+        apply_mechanism(GaussOpt, args, num_mech, e)
+        clear()
+        if len(epsilons) > 1: print("Running GaussOpt with Linf norm and IntOpt")
 
     # save TIME, MAE, etc...
     folder_path = "../results/Italy"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
     # get today's date and time
-    today = datetime.today().strftime('%Y-%m-%d-%H-%M')
-    with open(folder_path, "wb") as f:
+    today = datetime.now().strftime('%Y-%m-%d-%H-%M')
+    with open(os.path.join(folder_path, "results.pickle"), "wb") as f:
         # save as a dictionary
         pickle.dump({"TIME": TIME,
                      "MAE": MAE,
                      "std": std,
-                     "max_error_sparse": max_error_sparse,
-                     "false_discovery_rate_sparse": false_discovery_rate_sparse,
-                     "false_negative_rate_sparse": false_negative_rate_sparse,
+                     "max_error": max_error,
+                     "false_discovery_rate": false_discovery_rate,
+                     "false_negative_rate": false_negative_rate,
                      "epsilons": epsilons,
                      "num_experiments": num_experiments,
                      "date": today}, f)
@@ -184,12 +199,12 @@ def main(args: argparse.Namespace):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
     # plot maximum error
-    plot(max_error_sparse, y_log=True, title="Max Absolute Error", save_to=folder_path, name="max_error")
+    plot(max_error, y_log=True, title="Max Absolute Error", save_to=folder_path, name="max_error")
     # plot false discovery rate
-    plot(false_discovery_rate_sparse, y_log=False, title="False Discovery Rate", save_to=folder_path,
+    plot(false_discovery_rate, y_log=False, title="False Discovery Rate", save_to=folder_path,
          name="false_discovery_rate")
     # plot false negative rate
-    plot(false_negative_rate_sparse, y_log=False, title="False Negative Rate", save_to=folder_path,
+    plot(false_negative_rate, y_log=False, title="False Negative Rate", save_to=folder_path,
          name="false_negative_rate")
 
     # plot MAE
@@ -236,6 +251,7 @@ if __name__ == "__main__":
     parser.add_argument("--num-experiments", type=int, help="Number of experiments", default=10)
     parser.add_argument("--show-tqdm", action="store_true", help="Show tqdm progress bar", default=True)
     parser.add_argument("--split-method", type=str, help="Split method", default="uniform")
+    parser.add_argument("--final-level", type=int, help="Final level", default=6)
 
     args = parser.parse_args()
     main(args)
