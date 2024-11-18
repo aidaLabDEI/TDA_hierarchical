@@ -68,7 +68,6 @@ def main(args: argparse.Namespace):
     # get parameters
     epsilons = args.epsilons
     num_experiments = args.num_experiments
-    print(epsilons)
     # used to queries
     final_level = Tree.depth
     geo_level = int(final_level / 2)
@@ -176,6 +175,8 @@ def main(args: argparse.Namespace):
         file_path = os.path.join(save_to, name) + ".pdf"
         plt.savefig(file_path, dpi=300)
 
+    data_true = Tree.get_data_at_level(Tree.depth)
+
     folder_path = "../plots/Italy"
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
@@ -235,6 +236,4 @@ if __name__ == "__main__":
     parser.add_argument("--split-method", type=str, help="Split method", default="uniform")
 
     args = parser.parse_args()
-    print("hi")
-    print(vars(args))
     main(args)
