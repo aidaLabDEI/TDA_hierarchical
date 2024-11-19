@@ -1,30 +1,32 @@
 from typing import Union
 
+import numpy as np
 import opendp as dp
 import pandas as pd
-from opendp.domains import vector_domain, atom_domain, map_domain
-from opendp.metrics import l1_distance
-from opendp.measurements import make_laplace_threshold
-from opendp.mod import binary_search
+from opendp.domains import vector_domain, atom_domain
+from opendp.metrics import l2_distance
+from opendp.measurements import make_gaussian
 
 
-def make_stability_histogram(d_in: float, budget: tuple[float, float], verbose: bool = False) -> dp.Measurement:
+def make_gaussian_noise(d_in: Union[int, float],
+                        budget: float,
+                        dtype: type) -> dp.Measurement:
     """
-    Make a stability histogram given a budget
-    :param d_in: input sensitivity
-    :param budget: privacy budget
-    :param verbose: print threshold
+    Return a Gaussian mechanism with rho (from zCDP)
+    :param d_in: l2 sensitivity
+    :param budget: privacy budget (rho in zCDP)
+    :param dtype: input data type
+    :return: mechanism
     """
-
-    input_space = map_domain(atom_domain(T=str), atom_domain(T=float)), l1_distance(T=float)
-
-    def privatize(s, t=1e8):
-        return make_laplace_threshold(*input_space, scale=s, threshold=t)
-
-    s = binary_search(lambda s: privatize(s=s).map(d_in)[0] <= budget[0])
-    t = binary_search(lambda t: privatize(s=s, t=t).map(d_in)[1] <= budget[1])
-    if verbose: print(f"\nThreshold used: ", t, "\n")
-    return privatize(s=s, t=t)
+    # assert dtype is int or float
+    assert budget > 0, f"Invalid budget: {budget}, must be > 0"
+    assert dtype in [int, float], f"Invalid dtype: {dtype}, must be int or float"
+    if dtype == int:
+        input_space = vector_domain(atom_domain(T=np.int64)), l2_distance(T=np.int64)
+    else:
+        input_space = vector_domain(atom_domain(T=float)), l2_distance(T=float)
+    mechanism = make_gaussian(*input_space, scale=d_in / np.sqrt(2 * budget))
+    return mechanism
 
 
 def get_dict(df: pd.Series, key_as_str: bool = True) -> dict[str, float]:
@@ -108,12 +110,12 @@ def dict_to_dataset(data_dict, column_names=None):
 
 
 def stability_histogram(data_sensitive: pd.DataFrame, sensitivity: Union[int, float],
-                        budget: tuple[float, float], count_str: str) -> pd.DataFrame:
+                        budget: float, count_str: str) -> pd.DataFrame:
     """
-    Return a differential private dataset using the Stability Histogram mechanism
+    Return a differential private dataset using the Gauss Stability Histogram mechanism
     :param data_sensitive: the sensitive dataset
     :param sensitivity: the l1 sensitivity
-    :param budget: (epsilon, delta)
+    :param budget: rho
     :param count_str: the column containing the counts
     :return: pd.DataFrame, dataset privatize with stability histogram
     """
@@ -127,10 +129,9 @@ def stability_histogram(data_sensitive: pd.DataFrame, sensitivity: Union[int, fl
     attribute_columns = list(data_sensitive.columns[:-1])
     data_series = data_sensitive.set_index(attribute_columns)[count_str]
     data_series = data_series.astype(float)
-    data_dict = get_dict(data_series)
-    # create the mechanism
-    dp_mechanism = make_stability_histogram(sensitivity, budget)
 
+    # create the mechanism
+    dp_mechanism = make_gauss_stability_histogram(sensitivity, budget)
     # apply the mechanism
     dp_data_dict = dp_mechanism(data_dict)
     # transform the key type
