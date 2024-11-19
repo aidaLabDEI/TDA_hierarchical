@@ -72,7 +72,9 @@ def main(args: argparse.Namespace):
     Tree = OD_tree(df, spine)
 
     # get the data at the final level
-    final_level = args.final_level if args.final_level is not None else Tree.depth
+    if args.final_level is None:
+        args.final_level = Tree.depth
+    final_level = args.final_level
     data_true = Tree.get_data_at_level(final_level)
 
     # get parameters

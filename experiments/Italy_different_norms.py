@@ -7,7 +7,6 @@ import tqdm as tqdm
 import argparse
 import time
 from datetime import datetime
-from IPython.display import clear_output
 import matplotlib.pyplot as plt
 
 # Add the 'Main' directory to sys.path

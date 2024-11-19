@@ -47,7 +47,7 @@ def VanillaSH(Tree: OD_tree, args: argparse.Namespace) -> tuple[pd.DataFrame, fl
                                                      geo_level=geo_level)
     end: float = time.time()
     print(f"Time taken to create the dataset: {end - start:.2f} seconds")
-    return dp_dataset, end - start
+    return dp_dataset
 
 
 def pre_process(data: pd.Series) -> dict:
