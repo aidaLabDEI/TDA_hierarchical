@@ -9,7 +9,7 @@ import opendp as dp
 from .utils import split_rho_budget
 from data_structure.tree import OD_tree
 from data_structure.utils import get_dataset_from_dict
-from optimization import check_constraint, int_opt, optimize_int_vector
+from optimization import int_opt, fast_int_opt, standard_int_opt
 from differential_privacy import make_gaussian_noise, get_rho_from_budget
 
 
@@ -47,8 +47,10 @@ def GaussOpt(Tree: OD_tree, args: argparse.Namespace) -> OD_tree:
     # get optimizer
     if args.optimizer == "int_opt":
         optimizer = int_opt
-    elif args.optimizer == "int":
-        optimizer = lambda x, y: optimize_int_vector(x, y, p=args.p)
+    elif args.optimizer == "standard_int":
+        optimizer = lambda x, y: standard_int_opt(x, y, p=args.p)
+    elif args.optimizer == "fast_int_opt":
+        optimizer = fast_int_opt
     else:
         raise ValueError(f"Invalid optimizer: {args.optimizer}")
 

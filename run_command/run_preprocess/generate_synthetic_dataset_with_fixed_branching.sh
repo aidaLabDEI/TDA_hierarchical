@@ -8,6 +8,15 @@ python synthetic_dataset.py \
 --final-level 8 \
 --max-branching 2 \
 --seed 42 \
+--zero-probability 0 \
+--max-flow 1000 \
+--scale 3 \
+--save-to '../data/synthetic_fixed_branching_nozero/'
+
+python synthetic_dataset.py \
+--final-level 8 \
+--max-branching 2 \
+--seed 42 \
 --zero-probability 0.5 \
 --max-flow 1000 \
 --scale 3 \
