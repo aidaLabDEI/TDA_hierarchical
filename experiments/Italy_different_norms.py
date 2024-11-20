@@ -101,25 +101,25 @@ def main(args: argparse.Namespace):
     # shape: mechanism, epsilons, experiments
     TIME = np.zeros((num_mechanisms, len(epsilons), num_experiments))
 
-    # # RUN GAUSSOPT with L2 norm
-    # print("Running GaussOpt with L2 norm")
-    # num_mech = 0
-    # args.p = 2
-    # args.optimizer = "standard_int"
-    # for e, epsilon in enumerate(epsilons):
-    #     args.epsilon = epsilon
-    #     apply_mechanism(GaussOpt, args, num_mech, e)
-    #     if len(epsilons) > 1: print("Running GaussOpt with L2 norm")
-    #
-    # # RUN GAUSSOPT with Linf norm (no IntOpt)
-    # print("Running GaussOpt with Linf norm")
-    # num_mech = 1
-    # args.p = "inf"
-    # args.optimizer = "standard_int"
-    # for e, epsilon in enumerate(epsilons):
-    #     args.epsilon = epsilon
-    #     apply_mechanism(GaussOpt, args, num_mech, e)
-    #     if len(epsilons) > 1: print("Running GaussOpt with Linf norm")
+    # RUN GAUSSOPT with L2 norm
+    print("Running GaussOpt with L2 norm")
+    num_mech = 0
+    args.p = 2
+    args.optimizer = "standard_int"
+    for e, epsilon in enumerate(epsilons):
+        args.epsilon = epsilon
+        apply_mechanism(GaussOpt, args, num_mech, e)
+        if len(epsilons) > 1: print("Running GaussOpt with L2 norm")
+
+    # RUN GAUSSOPT with Linf norm (no IntOpt)
+    print("Running GaussOpt with Linf norm")
+    num_mech = 1
+    args.p = "inf"
+    args.optimizer = "standard_int"
+    for e, epsilon in enumerate(epsilons):
+        args.epsilon = epsilon
+        apply_mechanism(GaussOpt, args, num_mech, e)
+        if len(epsilons) > 1: print("Running GaussOpt with Linf norm")
 
     # RUN GAUSSOPT with Linf norm (IntOpt)
     print("Running GaussOpt with Linf norm and IntOpt")
