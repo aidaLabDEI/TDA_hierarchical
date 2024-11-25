@@ -1,6 +1,6 @@
 /results/
 /preprocess_data/Pendolarismo per sezione di censimento/
-/notebooks/TEST.ipynb
+/notebooks/Optimizer_IntOpt_test.ipynb
 /notebooks/TEST_Italy.ipynb
 /notebooks/TEST_OD_tree.ipynb
 /notebooks/TEST_synthetic_data_random_branch.ipynb
@@ -9,3 +9,5 @@
 /data_structure/hierarchical_data.py
 /plots/
 /data/
+/notebooks/synthetic_data_fixed_branch.ipynb
+/notebooks/synthetic_data_random_branch.ipynb

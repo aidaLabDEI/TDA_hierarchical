@@ -74,94 +74,38 @@ def standard_int_opt(y: np.array(int),
 
 
 def fast_int_opt(x: np.array(int), c: int) -> np.array:
-    # get the best solution in the reals
-    d = len(x)
-    z = (c - x.sum()) / d
-    # get the integer rounding
-    z_int = int(np.floor(z))
-    y: np.array = x + z_int
-    # get the offsets
-    d_tilde = c - x.sum() - d * z_int
-    # get indices of y in ascending order
-    I = np.argsort(-y)[:d_tilde]
-    # add ones
-    y[I] += 1
-    assert y.sum() == c, f"Sum of y: {y.sum()}, constraint: {c}"
-    # get maximum allowable subtraction
-    t = max(-min(y) + 1, 1)
-    # add non-negativity constraint
-    y = np.maximum(y, 0)
-    if y.sum() == c:
-        return y
-    # apply subtraction
-    I = np.argsort(y)  # get indices of y in ascending order
-    I = I[y[I] > 0]
+    """
+    From Algorithm 3 in the Appendix
+    Args:
+        x: np.array: array of integer
+        c: int: constraint
+
+    Returns: y: np.array: array of integer
+
+    """
+    a = (c - x.sum()) / len(x)
+    constrait = int(c - x.sum())
+    # round
+    a_int = int(np.ceil(a))
+    z = np.ones(len(x)) * a_int
+    # clip
+    z = np.maximum(z, -x).astype(int)
+    t = max(abs(z))  # smallest value in z that is allowed
+    I = np.argsort(x)  # get indices of x in ascending order
+    I = I[z[I] > -x[I]]
+    z_sum = z.sum()
     i = 0
-    y_sum = y.sum()
-    while y_sum != c:
-        z = y_sum - c
-        y_new = max(y[I[i]] - min(z, t), 0)
-        reduction = y[I[i]] - y_new
-        y[I[i]] = y_new
-        y_sum -= reduction
+    while z_sum > constrait:
+        R = int(z.sum() - c + x.sum())
+        z_new = max(z[I[i]] - R, -x[I[i]], -t)
+        reduction = z[I[i]] - z_new
+        z[I[i]] = z_new
+        z_sum -= reduction
         i += 1
         if i == len(I):
-            I = I[y[I] > 0]
+            I = I[z[I] > -x[I]]
             g = len(I)
-            r = int((1 / g) * (y_sum - c))
-            y_min = min(y[I])
-            t = min(max(r, 1), y_min)
-            while t > 1:
-                y = np.maximum(y - t, 0)
-                y_sum = y.sum()
-                I = I[y[I] > 0]
-                g = len(I)
-                r = int((1 / g) * (y.sum() - c))
-                y_min = min(y[I])
-                t = min(max(r, 1), y_min)
+            r = int((1 / g) * (z_sum - constrait))
+            t += max(1, r)
             i = 0
-
-    assert y.sum() == c, f"Sum of y: {y.sum()}, constraint: {c}"
-    return y
-
-
-def int_opt(x: np.array(int), c: int) -> np.array:
-    # get the best solution in the reals
-    d = len(x)
-    z = (c - x.sum()) / d
-    # get the integer rounding
-    z_int = int(np.floor(z))
-    y: np.array = x + z_int
-    # get the offsets
-    d_tilde = c - x.sum() - d * z_int
-    # get indices of y in ascending order
-    I = np.argsort(-y)[:d_tilde]
-    # add ones
-    y[I] += 1
-    assert y.sum() == c, f"Sum of y: {y.sum()}, constraint: {c}"
-    # get maximum allowable subtraction
-    t = max(-min(y) + 1, 1)
-    # add non-negativity constraint
-    y = np.maximum(y, 0)
-    if y.sum() == c:
-        return y
-    # apply subtraction
-    I = np.argsort(y)  # get indices of y in ascending order
-    I = I[y[I] > 0]
-    i = 0
-    y_sum = y.sum()
-    while y_sum != c:
-        z = y_sum - c
-        y_new = max(y[I[i]] - min(z, t), 0)
-        reduction = y[I[i]] - y_new
-        y[I[i]] = y_new
-        y_sum -= reduction
-        i += 1
-        if i == len(I):
-            I = I[y[I] > 0]
-            t = 1
-            i = 0
-
-    assert y.sum() == c, f"Sum of y: {y.sum()}, constraint: {c}"
-    return y
-
+    return z + x

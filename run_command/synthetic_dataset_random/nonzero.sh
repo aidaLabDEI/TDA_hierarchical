@@ -5,5 +5,5 @@ cd experiments || exit
 # run the python program synthetic_dataset.py
 
 python synthetic_dataset_experiments.py --delta 1e-8 --epsilons 1,10 --num-experiments 10 \
---file-path "../data/synthetic_fixed_branching_sparse" \
---save-path "../results/synthetic_fixed_branching_sparse"
+--file-path "../data/synthetic_random/nonzero" \
+--save-path "../results/synthetic_random/nonzero"

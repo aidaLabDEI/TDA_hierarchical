@@ -85,7 +85,7 @@ def main(args: argparse.Namespace):
     levels: list[tuple] = [(i, i) if i == j else (i, j) for i in range(geo_level + 1) for j in range(i, i + 2) if
                            j < geo_level + 1]
     # shape: mechanisms, epsilons, experiments, levels
-    num_mechanisms = 6
+    num_mechanisms = 5
     max_error = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
     false_discovery_rate = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
     false_negative_rate = np.zeros((num_mechanisms, len(epsilons), num_experiments, len(levels)))
@@ -94,62 +94,63 @@ def main(args: argparse.Namespace):
     std = np.zeros((num_mechanisms, len(epsilons), len(levels)))
     # shape: mechanism, epsilons, experiments
     TIME = np.zeros((num_mechanisms, len(epsilons), num_experiments))
+    num_mech = 0
 
     # RUN Stability Histogram
     print("Running Stability Histogram")
-    num_mech = 0
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(VanillaSH, args, num_mech, e)
         if len(epsilons) > 1: print("Running Stability Histogram")
+    num_mech += 1
 
     # RUN Vanilla Gauss
     print("Running Vanilla Gauss")
-    num_mech = 1
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(VanillaGauss, args, num_mech, e)
         if len(epsilons) > 1: print("Running Vanilla Gauss")
+    num_mech += 1
 
-    # RUN GAUSSOPT with L1 norm
-    print("Running GaussOpt with L1 norm")
-    num_mech = 2
-    args.p = 1
-    args.optimizer = "int"
-    for e, epsilon in enumerate(epsilons):
-        args.epsilon = epsilon
-        apply_mechanism(GaussOpt, args, num_mech, e)
-        if len(epsilons) > 1: print("Running GaussOpt with L1 norm")
+    # # RUN GAUSSOPT with L1 norm
+    # print("Running GaussOpt with L1 norm")
+    # args.p = 1
+    # args.optimizer = "int"
+    # for e, epsilon in enumerate(epsilons):
+    #     args.epsilon = epsilon
+    #     apply_mechanism(GaussOpt, args, num_mech, e)
+    #     if len(epsilons) > 1: print("Running GaussOpt with L1 norm")
+    # num_mech += 1
 
     # RUN GAUSSOPT with L2 norm
     print("Running GaussOpt with L2 norm")
-    num_mech = 3
     args.p = 2
-    args.optimizer = "int"
+    args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
         if len(epsilons) > 1: print("Running GaussOpt with L2 norm")
+    num_mech += 1
 
     # RUN GAUSSOPT with Linf norm (no IntOpt)
     print("Running GaussOpt with Linf norm")
-    num_mech = 4
     args.p = "inf"
-    args.optimizer = "int"
+    args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
         if len(epsilons) > 1: print("Running GaussOpt with Linf norm")
+    num_mech += 1
 
     # RUN GAUSSOPT with Linf norm (IntOpt)
     print("Running GaussOpt with Linf norm and IntOpt")
-    num_mech = 5
     args.p = "inf"
-    args.optimizer = "int_opt"
+    args.optimizer = "fast_int_opt"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
         if len(epsilons) > 1: print("Running GaussOpt with Linf norm and IntOpt")
+    num_mech += 1
 
     # save TIME, MAE, etc...
     folder_path = args.save_path

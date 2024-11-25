@@ -12,7 +12,7 @@ python synthetic_dataset.py \
 --max-flow 1000 \
 --random-branching \
 --scale 3 \
---save-to '../data/synthetic_random_branching_nozero/'
+--save-to '../data/synthetic_random/nozero/'
 
 python synthetic_dataset.py \
 --final-level 4 \
@@ -22,7 +22,7 @@ python synthetic_dataset.py \
 --max-flow 1000 \
 --random-branching \
 --scale 3 \
---save-to '../data/synthetic_random_branching_dense/'
+--save-to '../data/synthetic_random/dense/'
 
 python synthetic_dataset.py \
 --final-level 4 \
@@ -32,5 +32,5 @@ python synthetic_dataset.py \
 --max-flow 1000 \
 --random-branching \
 --scale 3 \
---save-to '../data/synthetic_random_branching_sparse/'
+--save-to '../data/synthetic_random/sparse/'
 

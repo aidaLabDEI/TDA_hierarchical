@@ -11,7 +11,7 @@ python synthetic_dataset.py \
 --zero-probability 0 \
 --max-flow 1000 \
 --scale 3 \
---save-to '../data/synthetic_fixed_branching_nozero/'
+--save-to '../data/synthetic_fixed/nozero/'
 
 python synthetic_dataset.py \
 --final-level 8 \
@@ -20,7 +20,7 @@ python synthetic_dataset.py \
 --zero-probability 0.5 \
 --max-flow 1000 \
 --scale 3 \
---save-to '../data/synthetic_fixed_branching_dense/'
+--save-to '../data/synthetic_fixed/dense/'
 
 python synthetic_dataset.py \
 --final-level 8 \
@@ -29,4 +29,4 @@ python synthetic_dataset.py \
 --zero-probability 0.99 \
 --max-flow 1000 \
 --scale 3 \
---save-to '../data/synthetic_fixed_branching_sparse/'
+--save-to '../data/synthetic_fixed/sparse/'
