@@ -1,5 +1,5 @@
 # go back two folder
-cd ..
+cd ../..
 # enter in the folder preprocess_data
 cd experiments || exit
 # run the python program synthetic_dataset.py
