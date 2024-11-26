@@ -28,7 +28,7 @@ def main(args: argparse.Namespace):
     def apply_mechanism(mech: callable, args: argparse.Namespace, num_mech: int, num_eps: int):
         absolute_error_distribution_epsilon = []
         for i in range(num_experiments):
-            print(f"Experiment {i + 1}")
+            print(f"Experiment {i + 1}, epsilon: {args.epsilon}, mechanism: {num_mech}")
             start = time.time()
             data = mech(Tree, args)
             end = time.time()
@@ -97,41 +97,33 @@ def main(args: argparse.Namespace):
     num_mech = 0
 
     # RUN Stability Histogram
-    print("Running Stability Histogram")
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(VanillaSH, args, num_mech, e)
-        if len(epsilons) > 1: print("Running Stability Histogram")
     num_mech += 1
 
     # RUN GAUSSOPT with L2 norm
-    print("Running GaussOpt with L2 norm")
     args.p = 2
     args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
-        if len(epsilons) > 1: print("Running GaussOpt with L2 norm")
     num_mech += 1
 
     # RUN GAUSSOPT with Linf norm (no IntOpt)
-    print("Running GaussOpt with Linf norm")
     args.p = "inf"
     args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
-        if len(epsilons) > 1: print("Running GaussOpt with Linf norm")
     num_mech += 1
 
     # RUN GAUSSOPT with Linf norm (IntOpt)
-    print("Running GaussOpt with Linf norm and IntOpt")
     args.p = "inf"
     args.optimizer = "fast_int_opt"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
         apply_mechanism(GaussOpt, args, num_mech, e)
-        if len(epsilons) > 1: print("Running GaussOpt with Linf norm and IntOpt")
     num_mech += 1
 
     # save TIME, MAE, etc...
