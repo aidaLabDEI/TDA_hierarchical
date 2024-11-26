@@ -112,16 +112,6 @@ def main(args: argparse.Namespace):
         if len(epsilons) > 1: print("Running Vanilla Gauss")
     num_mech += 1
 
-    # # RUN GAUSSOPT with L1 norm
-    # print("Running GaussOpt with L1 norm")
-    # args.p = 1
-    # args.optimizer = "int"
-    # for e, epsilon in enumerate(epsilons):
-    #     args.epsilon = epsilon
-    #     apply_mechanism(GaussOpt, args, num_mech, e)
-    #     if len(epsilons) > 1: print("Running GaussOpt with L1 norm")
-    # num_mech += 1
-
     # RUN GAUSSOPT with L2 norm
     print("Running GaussOpt with L2 norm")
     args.p = 2
