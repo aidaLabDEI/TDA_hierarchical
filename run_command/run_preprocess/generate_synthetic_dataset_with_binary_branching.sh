@@ -5,32 +5,28 @@ cd preprocess_data || exit
 # run the python program synthetic_dataset.py
 
 python synthetic_dataset.py \
---final-level 4 \
---max-branching 10 \
+--final-level 8 \
+--max-branching 2 \
 --seed 42 \
 --zero-probability 0 \
 --max-flow 1000 \
---random-branching \
 --scale 3 \
---save-to '../data/synthetic_random/complete/'
+--save-to '../data/synthetic_binary/complete/'
 
 python synthetic_dataset.py \
---final-level 4 \
---max-branching 10 \
+--final-level 8 \
+--max-branching 2 \
 --seed 42 \
 --zero-probability 0.5 \
 --max-flow 1000 \
---random-branching \
 --scale 3 \
---save-to '../data/synthetic_random/dense/'
+--save-to '../data/synthetic_binary/dense/'
 
 python synthetic_dataset.py \
---final-level 4 \
---max-branching 10 \
+--final-level 8 \
+--max-branching 2 \
 --seed 42 \
 --zero-probability 0.99 \
 --max-flow 1000 \
---random-branching \
 --scale 3 \
---save-to '../data/synthetic_random/sparse/'
-
+--save-to '../data/synthetic_binary/sparse/'

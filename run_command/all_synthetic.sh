@@ -1,9 +1,9 @@
-cd synthetic_dataset_fixed
-./nozero.sh
+cd synthetic_dataset_binary
+./complete.sh
 ./dense.sh
 ./sparse.sh
 cd ..
 cd synthetic_dataset_random
-./nozero.sh
+./complete.sh
 ./dense.sh
 ./sparse.sh

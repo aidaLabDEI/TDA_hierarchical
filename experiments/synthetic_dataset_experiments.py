@@ -12,7 +12,7 @@ from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from metrics import analysis
-from mechanism import GaussOpt, VanillaGauss, VanillaSH
+from mechanism import TDA, VanillaGauss, VanillaSH
 from data_structure import GeoSpine, OD_tree
 
 
@@ -113,7 +113,7 @@ def main(args: argparse.Namespace):
     args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
-        apply_mechanism(GaussOpt, args, num_mech, e)
+        apply_mechanism(TDA, args, num_mech, e)
     num_mech += 1
 
     # RUN GAUSSOPT with Linf norm (no IntOpt)
@@ -121,7 +121,7 @@ def main(args: argparse.Namespace):
     args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
-        apply_mechanism(GaussOpt, args, num_mech, e)
+        apply_mechanism(TDA, args, num_mech, e)
     num_mech += 1
 
     # RUN GAUSSOPT with Linf norm (IntOpt)
@@ -129,7 +129,7 @@ def main(args: argparse.Namespace):
     args.optimizer = "fast_int_opt"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
-        apply_mechanism(GaussOpt, args, num_mech, e)
+        apply_mechanism(TDA, args, num_mech, e)
     num_mech += 1
 
     # save TIME, MAE, etc...
