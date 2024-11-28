@@ -3,7 +3,7 @@ import os
 import pickle
 
 # import data
-file_path = "../data/Ireland/Commuting_data.csv"
+file_path = "../../data/Ireland/Commuting_data.csv"
 data = pd.read_csv(file_path, encoding='latin1')
 # remove columns that are not necessary
 columns = ["RESIDENCE_COUNTY", "RESIDENCE_CSOED", "POWSC_COUNTY","POWSC_CSOED",  "COUNT"]
@@ -26,7 +26,7 @@ for county in county_combinations:
         spine[county][csoed] = {}
 
 # save the spine
-folder_path = "../data/Ireland/structure"
+folder_path = "../../data/Ireland/structure"
 file_name_1 = f"{folder_path}/geo_spine.pickle"
 if not os.path.exists(folder_path):
     os.makedirs(folder_path)
@@ -34,7 +34,7 @@ with open(file_name_1, "wb") as f:
     pickle.dump(spine, f)
 
 # save the dataset
-folder_path = "../data/Ireland"
+folder_path = "../../data/Ireland"
 file_name_2 = f"{folder_path}/data.csv"
 data.to_csv(file_name_2, index=False)
 

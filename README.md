@@ -18,7 +18,9 @@ synthetic dataset in the shell files, like the sparsity, the number of levels, t
 
 ### Generate the real dataset
 It is necessary to download the dataset from ISTAT website. 
+
 https://www.istat.it/storage/cartografia/matrici_pendolarismo/matrici-pendolarismo-sezione-censimento-2011.zip
+
 This files needs to be inserted into the */preprocess_data* directory. 
 Then, it is sufficient to run the python script */preprocess_data/preprocess_ISTAT_data.py*
 
