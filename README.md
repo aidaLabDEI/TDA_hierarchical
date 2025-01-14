@@ -1,6 +1,6 @@
 # Differential Privacy Releasing of Hierarchical Origin/Destination Data with a TopDown Approach
 
-This repository contain the code for the paper "Differential Privacy Releasing of Hierarchical Origin/Destination Data with a TopDown Approach" 
+This repository contain the code for the paper "Differential Privacy Releasing of Hierarchical Origin/Destination Data with a TopDown Approach"
 
 To run the code, you need to install a conda environment using the environment.yml file
     
