@@ -6,4 +6,4 @@ cd experiments || exit
 
 python Italy_experiments.py --delta 1e-8 --show-tqdm --epsilons 0.1 --num-experiments 5 --final-level 6 \
 --file-path "../data/Italy" \
---save-path "../results/Italy"
+--save-path "../results/Italy_small_epsilon"
