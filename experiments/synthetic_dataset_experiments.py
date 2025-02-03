@@ -35,6 +35,7 @@ def main(args: argparse.Namespace):
             TIME[num_mech, num_eps, i] = end - start
             absolute_error_distribution = []
             for j, level in enumerate(tqdm.tqdm(levels, colour="green")):
+                # generate the query
                 workload = [[f"LEVEL{level[0]}_ORIG", f"LEVEL{level[1]}_DEST"]]
                 analysis_dict = analysis(data_true=data_true,
                                          dp_data=data,

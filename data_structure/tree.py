@@ -132,3 +132,9 @@ class OD_tree:
         # reindex stable data by adding zero
         query = stable_data.reindex(all_nodes, fill_value=0)
         return query
+
+    def get_number_of_nodes(self, level: int) -> int:
+        od_level: tuple = self._get_od_levels(level)
+        orig_nodes = self.spine.get_nodes(level=od_level[0])
+        dest_nodes = self.spine.get_nodes(level=od_level[1])
+        return len(orig_nodes) * len(dest_nodes)

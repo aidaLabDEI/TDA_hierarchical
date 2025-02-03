@@ -13,13 +13,13 @@ from optimization import fast_int_opt, standard_int_opt
 from differential_privacy import make_gaussian_noise, get_rho_from_budget
 
 
-def TDA(Tree: OD_tree, args: argparse.Namespace) -> OD_tree:
+def TDA(Tree: OD_tree, args: argparse.Namespace) -> pd.DataFrame:
     """
     This function implements the Gaussian mechanism with optimization. The Gaussian mechanism is implemented in the
     discrete domain, as the optimization step.
     :param args: argparse.Namespace containing input arguments.
     :param Tree: OD_tree object containing a tree structure.
-    :return: differential private tree
+    :return: pd.DataFrame containing the differentially private dataset.
     """
 
     start: float = time.time()

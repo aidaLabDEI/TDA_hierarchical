@@ -1,6 +1,8 @@
 import os
 import sys
 import pickle
+from typing import Union
+
 import pandas as pd
 import numpy as np
 import tqdm as tqdm
@@ -12,7 +14,7 @@ from datetime import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from metrics import analysis
-from mechanism import TDA, VanillaGauss, VanillaSH
+from mechanism import TDA, VanillaSH
 from data_structure import GeoSpine, OD_tree
 
 
@@ -25,7 +27,8 @@ def clear():
 
 
 def main(args: argparse.Namespace):
-    def apply_mechanism(mech: callable, args: argparse.Namespace, num_mech: int, num_eps: int):
+    def apply_mechanism(mech: callable, args: argparse.Namespace,
+                        num_mech: int, num_eps: int, return_data: bool = False) -> Union[None, pd.DataFrame]:
         absolute_error_distribution_epsilon = []
         for i in range(num_experiments):
             print(f"Experiment {i + 1}, epsilon: {args.epsilon}, mechanism: {num_mech}")
@@ -63,6 +66,15 @@ def main(args: argparse.Namespace):
         MAE[num_mech, num_eps] = error_to_add
         std[num_mech, num_eps] = std_to_add
 
+        if return_data:
+            return data
+        else:
+            return None
+
+    # create the folder to save the data
+    if not os.path.exists(args.save_path):
+        os.makedirs(args.save_path)
+
     # load the data
     folder_path = args.file_path
     with open(os.path.join(folder_path, "structure/geo_spine.pickle"), "rb") as f:
@@ -99,37 +111,46 @@ def main(args: argparse.Namespace):
     # RUN Stability Histogram
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
-        apply_mechanism(VanillaSH, args, num_mech, e)
+        dp_data = apply_mechanism(VanillaSH, args, num_mech, e, args.return_data)
     num_mech += 1
+    # save the data if needed
+    if args.return_data:
+        dp_data.to_csv(os.path.join(args.save_path, f"SH_data.csv"), index=False)
 
     # RUN GAUSSOPT with L2 norm
     args.p = 2
     args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
-        apply_mechanism(TDA, args, num_mech, e)
+        dp_data = apply_mechanism(TDA, args, num_mech, e, args.return_data)
     num_mech += 1
+    # save the data if needed
+    if args.return_data:
+        dp_data.to_csv(os.path.join(args.save_path, f"TDA_l2_data.csv"), index=False)
 
     # RUN GAUSSOPT with Linf norm (no IntOpt)
     args.p = "inf"
     args.optimizer = "standard_int"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
-        apply_mechanism(TDA, args, num_mech, e)
+        dp_data = apply_mechanism(TDA, args, num_mech, e, args.return_data)
     num_mech += 1
+    # save the data if needed
+    if args.return_data:
+        dp_data.to_csv(os.path.join(args.save_path, f"TDA_linf_data.csv"), index=False)
 
     # RUN GAUSSOPT with Linf norm (IntOpt)
     args.p = "inf"
     args.optimizer = "fast_int_opt"
     for e, epsilon in enumerate(epsilons):
         args.epsilon = epsilon
-        apply_mechanism(TDA, args, num_mech, e)
+        dp_data = apply_mechanism(TDA, args, num_mech, e, args.return_data)
     num_mech += 1
+    # save the data if needed
+    if args.return_data:
+        dp_data.to_csv(os.path.join(args.save_path, f"TDA_linf_IntOpt_data.csv"), index=False)
 
     # save TIME, MAE, etc...
-    folder_path = args.save_path
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
     # get today's date and time
     today = datetime.now().strftime('%Y-%m-%d-%H-%M')
     # get name of the file
@@ -170,6 +191,7 @@ if __name__ == "__main__":
     parser.add_argument("--final-level", type=int, help="Final level", default=None)
     parser.add_argument("--file-path", type=str, help="File path", required=True)
     parser.add_argument("--save-path", type=str, help="Save path", required=True)
+    parser.add_argument("--return-data", action="store_true", help="Return the data", default=False)
 
     args = parser.parse_args()
     clear()

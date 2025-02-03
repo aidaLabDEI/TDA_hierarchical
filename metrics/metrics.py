@@ -11,16 +11,17 @@ def false_discovery_rate(data_true: pd.DataFrame, dp_data: pd.DataFrame, workloa
     :param dp_data: private data
     :return: percentage of false positive
     """
-    count_str = data_true.columns[-1]
-    false_discovery_rate_list = []
-    for query in workload:
+    count_str = data_true.columns[-1]  # column name of the count
+    false_discovery_rate_list = []  # list of false positive rates
+    for query in workload:  # iterate over all the queries
         # get pandas series
-        data_true = data_true.groupby(query)[count_str].sum()
-        dp_data = dp_data.groupby(query)[count_str].sum()
+        data_true: pd.Series = data_true.groupby(query)[count_str].sum()
+        dp_data: pd.Series = dp_data.groupby(query)[count_str].sum()
         # drop elements that are equal to zero or negative
         data_true = data_true[data_true > 0]
         dp_data = dp_data[dp_data > 0]
-        # search indices of dp_data that are not in data_true
+        # search indices of dp_data that are not in data_true and count them using
+        # numpy logical_not function
         false_positive_indices = np.logical_not(dp_data.index.isin(data_true.index))
         # return the percentage of false positive in the released data
         false_discovery_rate_list.append((np.sum(false_positive_indices) / len(dp_data)) * 100)
@@ -39,12 +40,13 @@ def false_negative_rate(data_true: pd.DataFrame, dp_data: pd.DataFrame, workload
     false_negative_rate_list = []
     for query in workload:
         # get pandas series
-        data_true = data_true.groupby(query)[count_str].sum()
-        dp_data = dp_data.groupby(query)[count_str].sum()
+        data_true: pd.Series = data_true.groupby(query)[count_str].sum()
+        dp_data: pd.Series = dp_data.groupby(query)[count_str].sum()
         # drop elements that are equal to zero or negative
         data_true = data_true[data_true > 0]
         dp_data = dp_data[dp_data > 0]
-        # search indices of data_true that are not in dp_data
+        # search indices of data_true that are not in dp_data and count them using
+        # numpy logical_not function
         false_negative_indices = np.logical_not(data_true.index.isin(dp_data.index))
         # return the percentage of false negative that we missed
         false_negative_rate_list.append((np.sum(false_negative_indices) / len(data_true)) * 100)
@@ -106,10 +108,10 @@ def max_absolute_error(data_true: pd.DataFrame, dp_data: pd.DataFrame, spine: Ge
     MAE_list = []
     for query in workload:
         # get pandas series
-        data_true = data_true.groupby(query)[count_str].sum()
-        dp_data = dp_data.groupby(query)[count_str].sum()
+        data_true: pd.Series = data_true.groupby(query)[count_str].sum()
+        dp_data: pd.Series = dp_data.groupby(query)[count_str].sum()
         MAE_list.append(np.abs(data_true - dp_data).max())
-    # calculate the MAE
+    # calculate the mean max absolute error
     output = np.mean(MAE_list)
     return output
 
@@ -176,7 +178,7 @@ def L2(data_true: pd.DataFrame, dp_data: pd.DataFrame, spine: GeoSpine, workload
 
 
 def error_distribution(data_true: pd.DataFrame, dp_data: pd.DataFrame, spine: GeoSpine,
-                       workload=None) -> float:
+                       workload=None) -> list[float]:
     """
     Return the distribution of the error of the released data, accounting also for the zero values not present in
     the true data
@@ -194,10 +196,11 @@ def error_distribution(data_true: pd.DataFrame, dp_data: pd.DataFrame, spine: Ge
         number_of_dest_nodes = len(spine.get_nodes(levels[1]))
         total_data_points = number_of_orig_nodes * number_of_dest_nodes
         # get pandas series
-        data_true = data_true.groupby(query)[count_str].sum()
-        dp_data = dp_data.groupby(query)[count_str].sum()
+        data_true: pd.Series = data_true.groupby(query)[count_str].sum()
+        dp_data: pd.Series = dp_data.groupby(query)[count_str].sum()
+        # get the error distribution
         absolute_error_distribution_list = list(data_true - dp_data)
-        # add zero counts
+        # add zero counts (where both data_true and dp_data are zero)
         zero_elements = total_data_points - len(absolute_error_distribution_list)
         if zero_elements > 0:
             absolute_error_distribution_list += [0] * zero_elements

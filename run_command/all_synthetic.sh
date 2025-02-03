@@ -1,3 +1,5 @@
+# Run all synthetic dataset experiments
+
 cd synthetic_dataset_binary
 ./complete.sh
 ./dense.sh
