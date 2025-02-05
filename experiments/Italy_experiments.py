@@ -71,10 +71,6 @@ def main(args: argparse.Namespace):
         else:
             return None
 
-    # create the folder to save the data
-    if not os.path.exists(args.save_path):
-        os.makedirs(args.save_path)
-
     # load the data
     folder_path = args.file_path
     with open(os.path.join(folder_path, "structure/geo_spine.pickle"), "rb") as f:
@@ -150,6 +146,11 @@ def main(args: argparse.Namespace):
     if args.return_data:
         dp_data.to_csv(os.path.join(args.save_path, f"TDA_linf_IntOpt_data.csv"), index=False)
 
+    # create the folder to save the data
+    if not os.path.exists(args.save_path):
+        os.makedirs(args.save_path)
+    folder_path = args.save_path
+
     # save TIME, MAE, etc...
     # get today's date and time
     today = datetime.now().strftime('%Y-%m-%d-%H-%M')
@@ -159,6 +160,7 @@ def main(args: argparse.Namespace):
     while os.path.exists(os.path.join(folder_path, f"results_{counter}.pickle")):
         counter += 1
     filename = f"results_{counter}.pickle"
+    print("Saving to", os.path.join(folder_path, filename))
     with open(os.path.join(folder_path, filename), "wb") as f:
         # save as a dictionary
         pickle.dump({"TIME": TIME,

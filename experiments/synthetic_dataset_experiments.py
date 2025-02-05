@@ -137,6 +137,7 @@ def main(args: argparse.Namespace):
     folder_path = args.save_path
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
+
     # get today's date and time
     today = datetime.now().strftime('%Y-%m-%d-%H-%M')
     # get name of the file
