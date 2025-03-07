@@ -1,4 +1,4 @@
-# Differential Privacy Releasing of Hierarchical Origin/Destination Data with a TopDown Approach
+# Differentially Private Release of Hierarchical Origin/Destination Data with a TopDown Approach
 
 This repository contain the code for the paper "Differential Privacy Releasing of Hierarchical Origin/Destination Data with a TopDown Approach"
 
