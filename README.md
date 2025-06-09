@@ -63,3 +63,21 @@ chmod +x all_synthetic.sh
 The experiments will generate new `results.pickle` files in the `/results` folder. The results presented in the paper
 are already present in the folder as `results_1.pickle`. To plot the results, you can use the jupyter notebook in the
 `/notebooks` folder.
+
+#### Note: the experiments take a long time to run. The Italy dataset takes about 2 hours per experiments while the synthetic
+datasets take about 1 hour. By default, 10 indipendent experiments are run for each dataset, so the total time surpasses a day.
+I recommend to run just for a couple of experiments. It is sufficient to change th shell files.
+
+Example on Italy dataset
+```
+python Italy_experiments.py --delta 1e-8 --show-tqdm --epsilons 0.1,1,10 --num-experiments 10 --final-level 6 \
+--file-path "../data/Italy" \
+--save-path "../results/Italy"
+```
+
+Change to
+```
+python Italy_experiments.py --delta 1e-8 --show-tqdm --epsilons 0.1,1,10 --num-experiments 1 --final-level 6 \
+--file-path "../data/Italy" \
+--save-path "../results/Italy"
+```

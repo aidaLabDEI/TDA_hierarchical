@@ -15,7 +15,7 @@ My artifacts consits in python code, a conda enviroment, and a real dataset. The
 install and set up the conda environment, and to run the experiments. To simplify reproducibility,
 all the experements can be run using the shell files in the `run_command` folder.
 The experiments produce .pickle files that can be used to obtain the plots using
-the provided jupyter notebook in the `notebooks` folder.
+the provided jupyter notebooks in the `notebooks` folder.
 
 ### Security/Privacy Issues and Ethical Concerns (All badges)
 
@@ -36,7 +36,8 @@ All the software requirements are listed in the `environment.yml` file. The libr
 ### Estimated Time and Storage Consumption
 
 To get synthetic datasets, and pre-process the Italy dataset, take a few minutes. 
-Italy dataset 10 experiments take about 20 hours to run, while the synthetic datasets take about 10 minutes to run all the
+Italy dataset with 10 experiments takes about 20 hours to run, while the synthetic datasets take about 10 hours.
+A partial replication of the results can be obtained in 4~5 hours by just running two independent experiments (or even one) instead of 10.
 
 ## Environment
 
@@ -140,8 +141,11 @@ cd run_command
 chmod +x all_synthetic.sh
 ./all_synthetic.sh
 ```
+**Note:** By default 10 independent experiments are run for each dataset (to get max and min confidence interval). This may take an entire day. 
+As the max and min confidence intervals are not statistically significat for our claims, we advise to run with fewer experimets. Just a couple 
+of independent runs may be obtained in 4~5 hours.
 
-  This generates files `.pickle` in the results folder. In that folder are already present the results of my paper, they are
+  This generates files `.pickle` in the results folder. In that folder are already present the results of our paper, they are
   labelled as `results_1.pickle`.
   Generating new data will increase the counter of the label to `results_2.pickle`.
   After that, run the jupyter notebooks `plots_Italy.ipynb` and `synthetic_dataset.ipynb` in the `notebooks` folder to
