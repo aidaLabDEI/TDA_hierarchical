@@ -96,6 +96,6 @@ def TDA(Tree: OD_tree, args: argparse.Namespace) -> pd.DataFrame:
                                                      geo_level=geo_level)
 
     end: float = time.time()
-    print(f"Time taken to create the dataset: {end - start:.2f} seconds")
+    print(f"Time took to create the dataset: {end - start:.2f} seconds")
     print("Done!")
     return dp_dataset
