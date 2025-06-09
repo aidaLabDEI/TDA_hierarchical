@@ -18,6 +18,16 @@ conda activate top-down
 To generate the **synthetic** dataset run the shell files into `/run_command/run_preprocess/` folder. Inside you will
 find two shell files, one for the binary tree, the other for the random tree. You can change the parameters of the
 synthetic dataset in the shell files, like the sparsity, the number of levels, the seed for the randomizer.
+```bash
+cd run_command/run_preprocess
+
+chmod +x generate_synthetic_dataset_with_binary_branching.sh
+chmod +x generate_synthetic_dataset_with_random_branching.sh
+
+./generate_synthetic_dataset_with_binary_branching.sh
+./generate_synthetic_dataset_with_random_branching.sh
+
+```
 
 ### Generate the real dataset
 It is necessary to download the dataset from ISTAT website. 
@@ -27,8 +37,9 @@ https://www.istat.it/storage/cartografia/matrici_pendolarismo/matrici-pendolaris
 This files needs to be inserted into the `/preprocess_data` directory. 
 Then, it is sufficient to run the python script 
 
-```
-python preprocess_data/preprocess_ISTAT_data.py
+```bash
+cd preprocess_data
+python preprocess_ISTAT_data.py
 ```
 
 This generates a data folder containing the datasets.
@@ -36,14 +47,16 @@ This generates a data folder containing the datasets.
 ## Experiments
 The experiment on the Italian dataset can be run using the shell file `/run_command/Italy.sh`
 
-```
+```bash
 cd run_command
+chmod +x Italy.sh
 ./Italy.sh
 ```
 The experiments on the synthetic dataset can be run using the shell file `/run_command/all_synthetic.sh`
 
-```
+```bash
 cd run_command
+chmod +x all_synthetic.sh
 ./all_synthetic.sh
 ```
 
