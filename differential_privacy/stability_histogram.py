@@ -2,7 +2,7 @@ from typing import Union
 
 import opendp as dp
 import pandas as pd
-from opendp.domains import vector_domain, atom_domain, map_domain
+from opendp.domains import atom_domain, map_domain
 from opendp.metrics import l1_distance
 from opendp.measurements import make_laplace_threshold
 from opendp.mod import binary_search
