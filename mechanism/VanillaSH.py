@@ -20,9 +20,9 @@ def VanillaSH(Tree: OD_tree, args: argparse.Namespace) -> tuple[pd.DataFrame, fl
     # define the final level of the tree to reach
     final_level: int = vars(args).get('final_level', Tree.depth)
 
-    # l2 sensitivity
+    # l1 sensitivity
     max_contribution = vars(args).get('max_contribution', 1)
-    sensitivity: float = np.sqrt(2 * max_contribution)
+    sensitivity: float = 2 * max_contribution
 
     # instantiate the mechanism
     dp_mechanism: dp.Measurement = make_stability_histogram(d_in=sensitivity, budget=budget)
