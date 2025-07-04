@@ -64,20 +64,22 @@ The experiments will generate new `results.pickle` files in the `/results` folde
 are already present in the folder as `results_1.pickle`. To plot the results, you can use the jupyter notebook in the
 `/notebooks` folder.
 
-#### Note: the experiments take a long time to run. The Italy dataset takes about 2 hours per experiments while the synthetic
+### Note
+1. The experiments take a long time to run. The Italy dataset takes about 2 hours per experiments while the synthetic
 datasets take about 1 hour. By default, 10 indipendent experiments are run for each dataset, so the total time surpasses a day.
 I recommend to run just for a couple of experiments. It is sufficient to change th shell files.
-
 Example on Italy dataset
 ```
 python Italy_experiments.py --delta 1e-8 --show-tqdm --epsilons 0.1,1,10 --num-experiments 10 --final-level 6 \
 --file-path "../data/Italy" \
 --save-path "../results/Italy"
 ```
-
 Change to
 ```
 python Italy_experiments.py --delta 1e-8 --show-tqdm --epsilons 0.1,1,10 --num-experiments 1 --final-level 6 \
 --file-path "../data/Italy" \
 --save-path "../results/Italy"
 ```
+
+2.  Even though our paper investigates theoretically how to generalize the algorithm for different sensitivities, our implementation works only for the case where each user contributes to a single trip, and the neighboring relation is for bounded differential privacy. This is the case investigated in our experimental section.
+
