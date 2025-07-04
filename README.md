@@ -34,8 +34,7 @@ It is necessary to download the dataset from ISTAT website.
 
 https://www.istat.it/storage/cartografia/matrici_pendolarismo/matrici-pendolarismo-sezione-censimento-2011.zip
 
-This files needs to be inserted into the `/preprocess_data` directory. 
-Then, it is sufficient to run the python script 
+This files needs to be inserted into the `/preprocess_data` directory. The file then needs to be unzipped, then, it is sufficient to run the python script 
 
 ```bash
 cd preprocess_data
